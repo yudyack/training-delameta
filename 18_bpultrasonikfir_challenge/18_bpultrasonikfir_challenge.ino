@@ -6,7 +6,7 @@ int pinLedR = PB10;
 int pinLedY = PB1;
 int pinLedG = PB0;
 int pinTrigger = PA5;
-int pinEcho =   PA7;
+int pinEcho = PA7;
 
 int prev = 0;
 int toggle = 0;
@@ -23,13 +23,15 @@ void setup() {
   pinMode(pinLedG, OUTPUT);
 }
 
-boolean checkRising(int input){
-  boolean isRising = false;
-  if(prev == 0 && input == 1) {
-    isRising = true;
+boolean checkRising(int input) {
+  boolean isRising;
+  if (prev == 0 && input == 1) {
+    prev = input;
+    return true;
+  } else {
+    prev = input;
+    return false;
   }
-  prev = input;
-  return isRising;
 }
 
 void writeLED(int r, int y, int g) {
@@ -41,7 +43,7 @@ void writeLED(int r, int y, int g) {
 void loop() {
 
   // baca input
-  int readFlame = digitalRead(pinFlame);
+  int readFlame = !digitalRead(pinFlame);
   boolean rising = checkRising(readFlame);
   int readUS = ultraSonik.ping_cm();
 
@@ -53,18 +55,19 @@ void loop() {
   Serial.println();
 
   // logic
-  if(rising) toggle = !toggle;
-
-  if(toggle) {
-    if(readUS < 10 && readUS > 0) {
-      writeLED(1,0,0);
-    } else if (readUS < 30 && readUS > 0) {
-      writeLED(0,1,0);
-    } else {
-      writeLED(0,0,1);
-    }
-  } else {
-    writeLED(0,0,0);
+  if (rising) {
+    toggle = !toggle;
   }
 
+  if (toggle) {
+    if (readUS < 10 && readUS > 0) {
+      writeLED(1, 0, 0);
+    } else if (readUS < 30 && readUS > 0) {
+      writeLED(0, 1, 0);
+    } else {
+      writeLED(0, 0, 1);
+    }
+  } else {
+    writeLED(0, 0, 0);
+  }
 }
