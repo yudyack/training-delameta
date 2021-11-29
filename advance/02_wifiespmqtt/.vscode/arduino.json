@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "02_wifiespmqtt.ino",
+    "output": "build"
+}
